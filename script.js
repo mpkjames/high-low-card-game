@@ -56,13 +56,17 @@ const higherBtn = document.getElementById("higher-btn");
 const lowerBtn = document.getElementById("lower-btn");
 // A boolean value to see if the knownCard card has been drawn or not
 let knownCardDrawn = false;
+let unknownCardDrawn = false;
+let currentKnown;
+let currentUnknown;
 
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
     if (!knownCardDrawn) {
+        currentKnown = getnextCard(deck);
         knownCard.classList.add("flip-animate");
         setTimeout(function () {
-            knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
+            knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
             knownCard.classList.remove("card-back", "flippable");
         }, 250);
         higherBtn.classList.remove("not-selectable");
@@ -78,19 +82,75 @@ function getnextCard(deck) {
 
 // Make a selection of higher or lower
 higherBtn.addEventListener("click", function () {
-    if (knownCardDrawn) {
+    if (knownCardDrawn && !unknownCardDrawn) {
         higherBtn.classList.add("selected");
         lowerBtn.classList.remove("selected");
         unknownCard.classList.add("flippable");
     }
 });
 lowerBtn.addEventListener("click", function () {
-    if (knownCardDrawn) {
+    if (knownCardDrawn && !unknownCardDrawn) {
         lowerBtn.classList.add("selected");
         higherBtn.classList.remove("selected");
         unknownCard.classList.add("flippable");
     }
 });
+
+// Reveal the unknown card
+unknownCard.addEventListener("click", function () {
+    if (knownCardDrawn && !unknownCardDrawn) {
+        // Get the player's guess based on which button is selected
+        let playerGuess = document.getElementsByClassName("selected")[0].id;
+        // Disable the ability for the player to change guesses after the reveal
+        if (playerGuess === "higher-btn") {
+            lowerBtn.classList.add("not-selectable");
+        } else {
+            higherBtn.classList.add("not-selectable");
+        }
+        // Flip the card
+        currentUnknown = getnextCard(deck);
+        unknownCard.classList.add("flip-animate");
+        setTimeout(function () {
+            unknownCard.innerHTML = "<h3>" + currentUnknown + "</h3>";
+            unknownCard.classList.remove("card-back", "flippable");
+        }, 250);
+        // Compare the values
+        compareCards(currentKnown, currentUnknown, playerGuess);
+        unknownCardDrawn = true;
+    }
+});
+
+// convert the cards and compare
+function convertCard(card) {
+    if (card.split("-")[0] === "A") {
+        return 14;
+    }
+    if (card.split("-")[0] === "K") {
+        return 13;
+    }
+    if (card.split("-")[0] === "Q") {
+        return 12;
+    }
+    if (card.split("-")[0] === "J") {
+        return 11;
+    }
+    return parseInt(card.split("-")[0]);
+}
+function compareCards(card1, card2, playerGuess) {
+    let card1Value = convertCard(card1);
+    console.log(card1Value);
+    let card2Value = convertCard(card2);
+    console.log(card2Value);
+    if (card1Value < card2Value && playerGuess === "higher-btn") {
+        console.log("You win");
+    } else if (card1Value > card2Value && playerGuess === "lower-btn") {
+        console.log("You win");
+    } else if (card1Value === card2Value) {
+        console.log("You win");
+    } else {
+        console.log("You lose");
+    }
+}
 
 /*  START EMOJI ROTATION
     --------------------
