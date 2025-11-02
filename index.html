@@ -5,8 +5,34 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Document</title>
         <link rel="stylesheet" href="style.css" />
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link
+            href="https://fonts.googleapis.com/css2?family=Ancizar+Sans:ital,wght@0,100..1000;1,100..1000&family=Jersey+10&display=swap"
+            rel="stylesheet"
+        />
     </head>
     <body>
+        <header>
+            <h1>
+                <span class="emoji">♣️♦️</span> High-Low Game
+                <span class="emoji">♥️♠️</span>
+            </h1>
+        </header>
+        <main>
+            <div class="game-board pixel-corners">
+                <div class="card-row">
+                    <div id="known-card" class="card card-back"></div>
+                    <div id="unknown-card" class="card card-back"></div>
+                </div>
+                <div class="btn-row">
+                    <button id="draw-btn">Draw</button>
+                </div>
+            </div>
+        </main>
+        <footer>
+            <p>Made with 🏳️‍🌈 by MJ</p>
+        </footer>
         <script src="script.js"></script>
     </body>
 </html>
