@@ -66,10 +66,19 @@ main div.game-board div.btn-row {
 
 main div.game-board div.card {
     background-color: rgb(245, 245, 245);
+    color: rgb(12, 12, 12);
     width: 6rem;
     height: 9rem;
     border: solid 2px rgb(12, 12, 12);
     border-radius: 5px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+main div.game-board div.card h3 {
+    font-size: 2rem;
 }
 
 main div.game-board div.card.card-back {

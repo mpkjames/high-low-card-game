@@ -48,3 +48,18 @@ function shuffle(array) {
 
 // Shuffle the deck
 shuffle(deck);
+
+// Get button and card elements from game board
+const drawButton = document.getElementById("draw-btn");
+const knownCard = document.getElementById("known-card");
+
+// Display the next card when the "Draw" button is clicked
+drawButton.addEventListener("click", function () {
+    knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
+    knownCard.classList.remove("card-back");
+});
+
+// A function to remove the last element from the deck array and return it
+function getnextCard(deck) {
+    return deck.pop();
+}
