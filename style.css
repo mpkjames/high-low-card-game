@@ -90,6 +90,48 @@ main div.game-board div.card.card-back {
     box-shadow: inset 0 0 0 2px rgb(245, 245, 245);
 }
 
+main div.game-board div.card.card-back:hover {
+    cursor: not-allowed;
+}
+
+main div.game-board div.card.flippable:not(:hover) {
+    animation: shake 5s infinite;
+}
+
+/* From [https://unused-css.com/blog/css-shake-animation/] */
+@keyframes shake {
+    0% {
+        transform: translateX(0);
+    }
+    80% {
+        transform: translateY(0) rotate(0);
+    }
+    85% {
+        transform: translateY(-9px);
+    }
+    87% {
+        transform: translateY(-9px) rotate(7deg);
+    }
+    91% {
+        transform: translateY(-9px) rotate(-7deg);
+    }
+    93% {
+        transform: translateY(-9px) rotate(7deg);
+    }
+    95% {
+        transform: translateY(-9px) rotate(-7deg);
+    }
+    100% {
+        transform: translateY(0) rotate(0);
+    }
+}
+
+main div.game-board div.card.flippable:hover {
+    border: solid 3px #d29603;
+    cursor: pointer;
+    transform: scale(1.1);
+}
+
 button {
     padding: 0.5rem 1.5rem;
     background-color: rgb(110, 0, 0);
