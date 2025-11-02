@@ -50,20 +50,19 @@ function shuffle(array) {
 shuffle(deck);
 
 // Get button and card elements from game board
-const drawButton = document.getElementById("draw-btn");
 const knownCard = document.getElementById("known-card");
-// Make the higher and lower buttons selectable once a card has been drawn
+const unknownCard = document.getElementById("unknown-card");
 const higherBtn = document.getElementById("higher-btn");
 const lowerBtn = document.getElementById("lower-btn");
-// A boolean value to see if a card has been drawn or not
+// A boolean value to see if the knownCard card has been drawn or not
 let knownCardDrawn = false;
 
 // Display the next card when the "Draw" button is clicked
-drawButton.addEventListener("click", function () {
+knownCard.addEventListener("click", function () {
     if (!knownCardDrawn) {
         knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
         knownCard.classList.remove("card-back");
-        drawButton.classList.add("not-selectable");
+        knownCard.classList.remove("flippable");
         higherBtn.classList.remove("not-selectable");
         lowerBtn.classList.remove("not-selectable");
     }
@@ -80,12 +79,14 @@ higherBtn.addEventListener("click", function () {
     if (knownCardDrawn) {
         higherBtn.classList.add("selected");
         lowerBtn.classList.remove("selected");
+        unknownCard.classList.add("flippable");
     }
 });
 lowerBtn.addEventListener("click", function () {
     if (knownCardDrawn) {
         lowerBtn.classList.add("selected");
         higherBtn.classList.remove("selected");
+        unknownCard.classList.add("flippable");
     }
 });
 
