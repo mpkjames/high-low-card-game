@@ -63,3 +63,61 @@ drawButton.addEventListener("click", function () {
 function getnextCard(deck) {
     return deck.pop();
 }
+
+/*  START EMOJI ROTATION
+    --------------------
+    This feature is unrelated to the game logic. It cycles the emoji used in the footer of the
+    page on page load and click
+*/
+// A function to get an emoji at random
+function getEmoji() {
+    const accaptableEmojis = [
+        "♣️",
+        "♦️",
+        "♥️",
+        "♠️",
+        "🥰",
+        "😱",
+        "😈",
+        "💖",
+        "❤️‍🔥",
+        "✌️",
+        "🧚‍♂️",
+        "🐈‍⬛",
+        "🐶",
+        "🍑",
+        "☕️",
+        "🌚",
+        "🎉",
+        "🕹",
+        "🪓",
+        "🪤",
+        "🏳️‍🌈",
+    ];
+    return accaptableEmojis[
+        Math.floor(Math.random() * accaptableEmojis.length)
+    ];
+}
+
+// Get and update the footer span that contains the emoji on page load
+const footerEmoji = document.getElementById("footer-emoji");
+footerEmoji.innerHTML = getEmoji();
+
+// Get and update emoji on click, compare to not repeat same emoji twice in a row
+footerEmoji.addEventListener("click", function () {
+    let newEmoji = getEmoji();
+    while (newEmoji === footerEmoji.innerText) {
+        newEmoji = getEmoji();
+    }
+    // Add emoji with a spin effect
+    footerEmoji.classList.add("spin");
+    // Delay the changeing of the emoji until the 0.5s animation is half way through
+    setTimeout(function () {
+        footerEmoji.innerHTML = newEmoji;
+    }, 250);
+});
+
+// Remove the spin animation class when the animation is over
+footerEmoji.addEventListener("animationend", function () {
+    footerEmoji.classList.remove("spin");
+});
