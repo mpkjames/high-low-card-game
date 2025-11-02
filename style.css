@@ -129,7 +129,24 @@ main div.game-board div.card.flippable:not(:hover) {
 main div.game-board div.card.flippable:hover {
     border: solid 3px #d29603;
     cursor: pointer;
-    transform: scale(1.1);
+}
+
+.flip-animate {
+    animation-name: flip-animation;
+    animation-duration: 0.5s;
+    animation-iteration-count: 1;
+}
+
+@keyframes flip-animation {
+    0% {
+        transform: scaleX(1);
+    }
+    50% {
+        transform: scaleX(0);
+    }
+    100% {
+        transform: scaleX(1);
+    }
 }
 
 button {

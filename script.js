@@ -60,9 +60,11 @@ let knownCardDrawn = false;
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
     if (!knownCardDrawn) {
-        knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
-        knownCard.classList.remove("card-back");
-        knownCard.classList.remove("flippable");
+        knownCard.classList.add("flip-animate");
+        setTimeout(function () {
+            knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
+            knownCard.classList.remove("card-back", "flippable");
+        }, 250);
         higherBtn.classList.remove("not-selectable");
         lowerBtn.classList.remove("not-selectable");
     }
