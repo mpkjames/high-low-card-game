@@ -103,6 +103,28 @@ main div.game-board div.btn-row button:hover {
     cursor: pointer;
 }
 
+footer p span#footer-emoji {
+    cursor: pointer;
+    display: inline-block;
+}
+
+@keyframes spin-animation {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.spin {
+    animation-name: spin-animation;
+    animation-duration: 0.5s;
+    animation-timing-function: ease-in-out;
+    cursor: no-drop;
+    pointer-events: none;
+}
+
 /* START PIXEL CORNERS */
 /* ------------------- */
 
