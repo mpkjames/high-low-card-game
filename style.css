@@ -34,6 +34,7 @@ footer {
 header h1 {
     font-family: "Jersey 10", sans-serif;
     font-size: 5rem;
+    text-shadow: 0px 5px rgb(48, 48, 48);
 }
 
 header h1 span.emoji {
@@ -89,18 +90,43 @@ main div.game-board div.card.card-back {
     box-shadow: inset 0 0 0 2px rgb(245, 245, 245);
 }
 
-main div.game-board div.btn-row button {
+button {
     padding: 0.5rem 1.5rem;
     background-color: rgb(110, 0, 0);
     border: solid 2px rgb(12, 12, 12);
     border-radius: 5px;
     color: rgb(245, 245, 245);
     font-weight: 600;
+    min-width: 6rem;
 }
 
-main div.game-board div.btn-row button:hover {
+button:hover {
     background-color: #d29603;
     cursor: pointer;
+}
+
+button.not-selectable {
+    background-color: gray;
+    cursor: not-allowed;
+}
+
+button.selected {
+    background-color: rgb(15, 108, 15);
+    border: solid 2px #d29603;
+    animation-name: selection-float;
+    animation-duration: 0.7s;
+    animation-timing-function: ease-in-out;
+    animation-iteration-count: infinite;
+    animation-direction: alternate;
+}
+
+@keyframes selection-float {
+    from {
+        transform: translateY(-3px);
+    }
+    to {
+        transform: translateY(2px);
+    }
 }
 
 footer p span#footer-emoji {
@@ -121,7 +147,6 @@ footer p span#footer-emoji {
     animation-name: spin-animation;
     animation-duration: 0.5s;
     animation-timing-function: ease-in-out;
-    cursor: no-drop;
     pointer-events: none;
 }
 

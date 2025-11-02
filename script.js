@@ -52,17 +52,42 @@ shuffle(deck);
 // Get button and card elements from game board
 const drawButton = document.getElementById("draw-btn");
 const knownCard = document.getElementById("known-card");
+// Make the higher and lower buttons selectable once a card has been drawn
+const higherBtn = document.getElementById("higher-btn");
+const lowerBtn = document.getElementById("lower-btn");
+// A boolean value to see if a card has been drawn or not
+let knownCardDrawn = false;
 
 // Display the next card when the "Draw" button is clicked
 drawButton.addEventListener("click", function () {
-    knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
-    knownCard.classList.remove("card-back");
+    if (!knownCardDrawn) {
+        knownCard.innerHTML = "<h3>" + getnextCard(deck) + "</h3>";
+        knownCard.classList.remove("card-back");
+        drawButton.classList.add("not-selectable");
+        higherBtn.classList.remove("not-selectable");
+        lowerBtn.classList.remove("not-selectable");
+    }
+    knownCardDrawn = true;
 });
 
 // A function to remove the last element from the deck array and return it
 function getnextCard(deck) {
     return deck.pop();
 }
+
+// Make a selection of higher or lower
+higherBtn.addEventListener("click", function () {
+    if (knownCardDrawn) {
+        higherBtn.classList.add("selected");
+        lowerBtn.classList.remove("selected");
+    }
+});
+lowerBtn.addEventListener("click", function () {
+    if (knownCardDrawn) {
+        lowerBtn.classList.add("selected");
+        higherBtn.classList.remove("selected");
+    }
+});
 
 /*  START EMOJI ROTATION
     --------------------
