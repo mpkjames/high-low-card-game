@@ -5,6 +5,16 @@ let currentKnown;
 let currentUnknown;
 let streak;
 
+// Get various elements from game board
+const knownCard = document.getElementById("known-card");
+const unknownCard = document.getElementById("unknown-card");
+const higherBtn = document.getElementById("higher-btn");
+const lowerBtn = document.getElementById("lower-btn");
+const streakCounterContainer = document.getElementById("streak-counter");
+const streakCounter = document.getElementById("streak-count-num");
+const discardPile = document.getElementById("discard-cards");
+const activePile = document.getElementById("active-cards");
+
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
     // A boolean value to see if the knownCard card has been drawn or not
@@ -13,6 +23,7 @@ function startNewGame() {
     currentKnown = null;
     currentUnknown = null;
     streak = 0;
+    discardDeck = [];
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -28,6 +39,8 @@ function startNewGame() {
     streakCounter.innerHTML = streak + "!";
     discardPile.classList.add("empty", "inactive-pile");
     activePile.classList.add("inactive-pile");
+    knownCard.classList.remove("slide-and-fade-out");
+    unknownCard.classList.remove("slide-and-replace");
 }
 
 newGameBtn.addEventListener("click", function () {
@@ -52,6 +65,7 @@ const ranks = [
     "K",
 ];
 let deck = [];
+let discardDeck = [];
 
 // Use 'suits' and 'ranks' to create a deck
 function createDeck() {
@@ -84,15 +98,6 @@ function shuffle(array) {
         array[randomIndex] = tempElement;
     }
 }
-
-// Get various elements from game board
-const knownCard = document.getElementById("known-card");
-const unknownCard = document.getElementById("unknown-card");
-const higherBtn = document.getElementById("higher-btn");
-const lowerBtn = document.getElementById("lower-btn");
-const streakCounter = document.getElementById("streak-count-num");
-const discardPile = document.getElementById("discard-cards");
-const activePile = document.getElementById("active-cards");
 
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
@@ -175,15 +180,49 @@ function compareCards(card1, card2, playerGuess) {
     console.log(card1Value);
     let card2Value = convertCard(card2);
     console.log(card2Value);
-    if (card1Value < card2Value && playerGuess === "higher-btn") {
-        console.log("You win");
-    } else if (card1Value > card2Value && playerGuess === "lower-btn") {
-        console.log("You win");
-    } else if (card1Value === card2Value) {
-        console.log("You win");
+    if (
+        (card1Value < card2Value && playerGuess === "higher-btn") ||
+        (card1Value > card2Value && playerGuess === "lower-btn") ||
+        card1Value === card2Value
+    ) {
+        handleWin();
     } else {
-        console.log("You lose");
+        console.log("You lose. Game Over.");
     }
+}
+
+function handleWin() {
+    streak++;
+    streakCounterContainer.classList.add("update-bounce-animate");
+    setTimeout(function () {
+        streakCounter.innerHTML = streak + "!";
+    }, 250);
+    setTimeout(function () {
+        streakCounterContainer.classList.remove("update-bounce-animate");
+    }, 500);
+    knownCard.classList.add("slide-and-fade-out");
+    setTimeout(function () {
+        discardDeck.push(currentKnown);
+        discardPile.classList.remove("empty");
+        unknownCard.classList.add("slide-and-replace");
+        setTimeout(function () {
+            currentKnown = currentUnknown;
+            knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
+            knownCard.classList.remove("flip-animate");
+            knownCard.classList.remove("slide-and-fade-out");
+            unknownCard.innerHTML = "";
+            unknownCard.classList.add("card-back");
+            unknownCard.classList.remove("flip-animate");
+            higherBtn.classList.remove("not-selectable");
+            higherBtn.classList.remove("selected");
+            lowerBtn.classList.remove("not-selectable");
+            lowerBtn.classList.remove("selected");
+            unknownCard.classList.remove("slide-and-replace");
+            knownCardDrawn = true;
+            unknownCardDrawn = false;
+            currentUnknown = null;
+        }, 1000);
+    }, 1000);
 }
 
 // Run the start new game function on page load
