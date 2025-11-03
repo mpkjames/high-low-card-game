@@ -31,14 +31,26 @@ footer {
     background-color: rgb(46, 23, 92);
 }
 
+header {
+    flex-direction: column;
+    flex-wrap: wrap;
+    align-items: center;
+}
+
 header h1 {
     font-family: "Jersey 10", sans-serif;
     font-size: 5rem;
     text-shadow: 0px 5px rgb(48, 48, 48);
+    margin-top: 1rem;
+    margin-bottom: 0;
 }
 
 header h1 span.emoji {
     font-size: 3rem;
+}
+header button {
+    max-width: fit-content;
+    margin-bottom: 1rem;
 }
 
 main {
