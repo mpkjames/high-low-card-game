@@ -21,6 +21,13 @@
             <button id="new-game-btn">New Game</button>
         </header>
         <main>
+            <div id="score-board" class="pixel-corners">
+                <div id="streak-counter">
+                    <h3>Streak:</h3>
+                    <p id="streak-count-num">0!</p>
+                </div>
+                <div id="modifiers"></div>
+            </div>
             <div class="game-board pixel-corners">
                 <div class="card-row">
                     <div id="known-card" class="card card-back flippable"></div>
@@ -35,6 +42,22 @@
                             Lower
                         </button>
                     </div>
+                </div>
+            </div>
+            <div id="deck-area" class="pixel-corners">
+                <div id="discard-pile">
+                    <h3>Seen cards</h3>
+                    <div
+                        id="discard-cards"
+                        class="card-pile card card-back"
+                    ></div>
+                </div>
+                <div id="active-pile">
+                    <h3>Unseen cards</h3>
+                    <div
+                        id="active-cards"
+                        class="card-pile card card-back"
+                    ></div>
                 </div>
             </div>
         </main>

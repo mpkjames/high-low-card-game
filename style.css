@@ -58,9 +58,51 @@ main {
     align-content: center;
 }
 
+main #score-board,
+main #deck-area {
+    width: 400px;
+    height: 100px;
+    margin: auto;
+    background-color: rgb(3, 51, 3);
+    display: flex;
+    flex-wrap: nowrap;
+    justify-content: space-between;
+    gap: 2rem;
+    padding: 0.5rem 1.5rem;
+}
+
+main #score-board #streak-counter {
+    align-items: center;
+    transform: rotateZ(354deg);
+}
+
+main #score-board #modifiers {
+    width: 150px;
+}
+
+#streak-counter h3,
+#streak-counter p,
+#discard-pile h3,
+#active-pile h3 {
+    font-family: "Jersey 10", sans-serif;
+    text-shadow: 0px 3px rgb(48, 48, 48);
+    margin-top: 0;
+    margin-bottom: 0;
+    text-align: center;
+    line-height: 2rem;
+}
+
+main #score-board #streak-counter h3 {
+    font-size: 1.5rem;
+}
+
+main #score-board #streak-counter p {
+    font-size: 3rem;
+}
+
 main div.game-board {
     width: 400px;
-    height: 400px;
+    height: 300px;
     background-color: rgb(3, 51, 3);
     margin: auto;
     align-content: center;
@@ -77,7 +119,7 @@ main div.game-board div.btn-row {
     justify-content: center;
 }
 
-main div.game-board div.card {
+div.card {
     background-color: rgb(245, 245, 245);
     color: rgb(12, 12, 12);
     width: 6rem;
@@ -94,7 +136,7 @@ main div.game-board div.card h3 {
     font-size: 2rem;
 }
 
-main div.game-board div.card.card-back {
+div.card.card-back {
     background-image: url(/images/card-back.png);
     background-size: cover;
     background-repeat: no-repeat;
@@ -198,6 +240,29 @@ button.selected {
     to {
         transform: translateY(2px);
     }
+}
+
+#deck-area div.card-pile {
+    transition: transform 0.3s ease-in-out;
+}
+
+#deck-area div.card-pile.empty,
+#deck-area div.card-pile.inactive-pile {
+    cursor: not-allowed;
+}
+
+#deck-area div.card-pile.empty {
+    opacity: 0.5;
+}
+
+#deck-area div.card-pile.inactive-pile {
+    filter: grayscale();
+}
+
+#deck-area div.card-pile:not(.inactive-pile):hover {
+    border: solid 2px #d29603;
+    cursor: pointer;
+    transform: translateY(-20px) rotateZ(-2deg) scale(1.1);
 }
 
 footer p span#footer-emoji {
