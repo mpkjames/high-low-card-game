@@ -137,9 +137,15 @@ lowerBtn.addEventListener("click", function () {
 
 // Reveal the unknown card
 unknownCard.addEventListener("click", function () {
+    // Check to see if a higher/lower option has been selected
+    const higherLowerSelected = document.querySelector(".selected");
+    if (higherLowerSelected == null) {
+        return;
+    }
+    // If a higher/lower select has been made, reveal the unknown card
     if (knownCardDrawn && !unknownCardDrawn) {
         // Get the player's guess based on which button is selected
-        let playerGuess = document.getElementsByClassName("selected")[0].id;
+        let playerGuess = higherLowerSelected.id;
         // Disable the ability for the player to change guesses after the reveal
         if (playerGuess === "higher-btn") {
             lowerBtn.classList.add("not-selectable");
