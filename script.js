@@ -3,6 +3,7 @@ let knownCardDrawn;
 let unknownCardDrawn;
 let currentKnown;
 let currentUnknown;
+let streak;
 
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
@@ -11,6 +12,7 @@ function startNewGame() {
     unknownCardDrawn = false;
     currentKnown = null;
     currentUnknown = null;
+    streak = 0;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -23,6 +25,9 @@ function startNewGame() {
     higherBtn.classList.remove("selected");
     lowerBtn.classList.add("not-selectable");
     lowerBtn.classList.remove("selected");
+    streakCounter.innerHTML = streak + "!";
+    discardPile.classList.add("empty", "inactive-pile");
+    activePile.classList.add("inactive-pile");
 }
 
 newGameBtn.addEventListener("click", function () {
@@ -80,11 +85,14 @@ function shuffle(array) {
     }
 }
 
-// Get button and card elements from game board
+// Get various elements from game board
 const knownCard = document.getElementById("known-card");
 const unknownCard = document.getElementById("unknown-card");
 const higherBtn = document.getElementById("higher-btn");
 const lowerBtn = document.getElementById("lower-btn");
+const streakCounter = document.getElementById("streak-count-num");
+const discardPile = document.getElementById("discard-cards");
+const activePile = document.getElementById("active-cards");
 
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
