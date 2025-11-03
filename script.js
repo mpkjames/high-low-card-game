@@ -1,4 +1,35 @@
-// Two arrays to store suite and rank information
+const newGameBtn = document.getElementById("new-game-btn");
+let knownCardDrawn;
+let unknownCardDrawn;
+let currentKnown;
+let currentUnknown;
+
+// A function to start a new game (called automatically on page load)
+function startNewGame() {
+    // A boolean value to see if the knownCard card has been drawn or not
+    knownCardDrawn = false;
+    unknownCardDrawn = false;
+    currentKnown = null;
+    currentUnknown = null;
+    createDeck();
+    shuffle(deck);
+    knownCard.innerHTML = "";
+    knownCard.classList.add("card-back", "flippable");
+    knownCard.classList.remove("flip-animate");
+    unknownCard.innerHTML = "";
+    unknownCard.classList.add("card-back");
+    unknownCard.classList.remove("flip-animate", "flippable");
+    higherBtn.classList.add("not-selectable");
+    higherBtn.classList.remove("selected");
+    lowerBtn.classList.add("not-selectable");
+    lowerBtn.classList.remove("selected");
+}
+
+newGameBtn.addEventListener("click", function () {
+    startNewGame();
+});
+
+// Two arrays to store suite and rank information, an empty array for the deck
 const suits = ["♣️", "♦️", "♥️", "♠️"];
 const ranks = [
     "A",
@@ -15,12 +46,15 @@ const ranks = [
     "Q",
     "K",
 ];
+let deck = [];
 
 // Use 'suits' and 'ranks' to create a deck
-let deck = [];
-for (const suit of suits) {
-    for (const rank of ranks) {
-        deck.push(`${rank}-${suit}`);
+function createDeck() {
+    deck = [];
+    for (const suit of suits) {
+        for (const rank of ranks) {
+            deck.push(`${rank}-${suit}`);
+        }
     }
 }
 
@@ -46,19 +80,11 @@ function shuffle(array) {
     }
 }
 
-// Shuffle the deck
-shuffle(deck);
-
 // Get button and card elements from game board
 const knownCard = document.getElementById("known-card");
 const unknownCard = document.getElementById("unknown-card");
 const higherBtn = document.getElementById("higher-btn");
 const lowerBtn = document.getElementById("lower-btn");
-// A boolean value to see if the knownCard card has been drawn or not
-let knownCardDrawn = false;
-let unknownCardDrawn = false;
-let currentKnown;
-let currentUnknown;
 
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
@@ -151,6 +177,9 @@ function compareCards(card1, card2, playerGuess) {
         console.log("You lose");
     }
 }
+
+// Run the start new game function on page load
+startNewGame();
 
 /*  START EMOJI ROTATION
     --------------------
