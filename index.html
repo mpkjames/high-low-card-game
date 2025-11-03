@@ -18,7 +18,10 @@
                 <span class="emoji">♣️♦️</span> Alto-Basso
                 <span class="emoji">♥️♠️</span>
             </h1>
-            <button id="new-game-btn">New Game</button>
+            <div id="game-buttons">
+                <button id="new-game-btn">New Game</button>
+                <button id="rules-btn">How to Play</button>
+            </div>
         </header>
         <main>
             <div id="score-board" class="pixel-corners">
@@ -64,6 +67,9 @@
         <footer>
             <p>Made with <span id="footer-emoji"></span> by MJ</p>
         </footer>
+        <div id="modal-overlay" class="hidden">
+            <div id="modal-content" class="pixel-corners"></div>
+        </div>
         <script src="script.js"></script>
     </body>
 </html>

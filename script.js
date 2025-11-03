@@ -14,6 +14,9 @@ const streakCounterContainer = document.getElementById("streak-counter");
 const streakCounter = document.getElementById("streak-count-num");
 const discardPile = document.getElementById("discard-cards");
 const activePile = document.getElementById("active-cards");
+const modal = document.getElementById("modal-overlay");
+const rulesBtn = document.getElementById("rules-btn");
+const modalContent = document.getElementById("modal-content");
 
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
@@ -230,6 +233,67 @@ function handleWin() {
         }, 1000);
     }, 1000);
 }
+
+// Modal Functionality
+function showModal(contentHTML) {
+    modalContent.innerHTML = contentHTML;
+    modal.classList.remove("hidden");
+}
+
+function hideModal() {
+    modalContent.innerHTML = "";
+    modal.classList.add("hidden");
+}
+// Show Rules
+rulesBtn.addEventListener("click", function () {
+    showModal(`<div id="show-rules-modal">
+                    <div id="rules-header">
+                        <h2>Game Rules</h2>
+                    </div>
+                    <div id="rules-text">
+                        <p>Here are the rules to the game.</p>
+                        <ul>
+                            <li>
+                                Two cards are drawn from your deck. One is
+                                flipped. You must guess whther the card you
+                                cannot see is higher or lower than the one you
+                                can see.
+                            </li>
+                            <li>
+                                If you guess correctly, a new, face-down card is
+                                drawn and the game continues. If you guess
+                                incorrectly, it is game over.
+                            </li>
+                            <li>
+                                When there are no more cards left in the deck to
+                                draw, the game is over. You have won 🎉
+                            </li>
+                            <li>
+                                As you play, you may be presented with modifiers
+                                that change the rules of the game. Your current
+                                modifiers can be examined at any time.
+                            </li>
+                            <li>
+                                In the absence of modifiers, the cards of a suit
+                                are ordered (from smallest): 2, 3, 4, 5, 6, 7,
+                                8, 9, 10, J, Q, K, A. If the revealed card is
+                                equal to the current known card, either guess is
+                                accepted as correct.
+                            </li>
+                        </ul>
+                        <p>Good luck!</p>
+                    </div>
+                    <div id="rules-close-btn">
+                        <button id="close-rules">Close rules</button>
+                    </div>
+                </div>`);
+});
+// Add an event listener to the overlay to be able to use the button to close
+modal.addEventListener("click", function (event) {
+    if (event.target.id === "close-rules") {
+        hideModal();
+    }
+});
 
 // Run the start new game function on page load
 startNewGame();
