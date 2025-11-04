@@ -4,6 +4,8 @@ let unknownCardDrawn;
 let currentKnown;
 let currentUnknown;
 let streak;
+let canViewDiscardPile;
+let canViewActivePile;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -27,6 +29,8 @@ function startNewGame() {
     currentUnknown = null;
     streak = 0;
     discardDeck = [];
+    canViewDiscardPile = false;
+    canViewActivePile = false;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -184,6 +188,7 @@ function convertCard(card) {
     }
     return parseInt(card.split("-")[0]);
 }
+
 function compareCards(card1, card2, playerGuess) {
     let card1Value = convertCard(card1);
     let card2Value = convertCard(card2);
@@ -193,6 +198,9 @@ function compareCards(card1, card2, playerGuess) {
         card1Value === card2Value
     ) {
         handleWin();
+        // Check if discard pile is viewable
+
+        // Check in active pile is viewable
     } else {
         setTimeout(function () {
             gameOverLose(streak);
@@ -212,7 +220,6 @@ function handleWin() {
     knownCard.classList.add("slide-and-fade-out");
     setTimeout(function () {
         discardDeck.push(currentKnown);
-        discardPile.classList.remove("empty");
         unknownCard.classList.add("slide-and-replace");
         setTimeout(function () {
             currentKnown = currentUnknown;
@@ -230,9 +237,90 @@ function handleWin() {
             knownCardDrawn = true;
             unknownCardDrawn = false;
             currentUnknown = null;
+            // Temporary placeholder for testing
+            canViewDiscardPile = true;
+            canViewActivePile = true;
+            // Check whether the active/discard piles should be accessible or not
+            canAccessDiscardPile();
+            canAccessActivePile();
         }, 1000);
     }, 1000);
 }
+
+/*  VIEW DISCARD PILE
+    -----------------
+*/
+// Functions to handle pile access called after each round
+function canAccessDiscardPile() {
+    if (canViewDiscardPile) {
+        discardPile.classList.remove("inactive-pile");
+    } else {
+        discardPile.classList.add("inactive-pile");
+    }
+    if (discardDeck.length > 0) {
+        discardPile.classList.remove("empty");
+    } else {
+        discardPile.classList.add("empty");
+    }
+}
+function canAccessActivePile() {
+    if (canViewActivePile) {
+        activePile.classList.remove("inactive-pile");
+    } else {
+        activePile.classList.add("inactive-pile");
+    }
+    if (deck.length > 0) {
+        activePile.classList.remove("empty");
+    } else {
+        activePile.classList.add("empty");
+    }
+}
+
+discardPile.addEventListener("click", function () {
+    if (!canViewDiscardPile) {
+        return;
+    } else {
+        // For display pusposes, create a reversed COPY of the discard pile
+        const reverseDiscardDeck = [...discardDeck].reverse();
+        const cardsHTML = reverseDiscardDeck
+            .map((card) => `<div class="card"><h3>${card}</h3></div>`)
+            .join("");
+        showModal(`<div id="show-pile-modal">
+                        <div id="modal-header">
+                            <h2>Discard Pile</h2>
+                        </div>
+                        <div id="card-viewer-container" class="discard">
+                            ${cardsHTML}
+                        </div>
+                        <div id="modal-btn-row">
+                            <button id="close-modal-btn">Close</button>
+                        </div>
+                    </div>`);
+    }
+});
+
+activePile.addEventListener("click", function () {
+    if (!canViewActivePile) {
+        return;
+    } else {
+        // For display pusposes, create a reversed COPY of the discard pile
+        const reverseActiveDeck = [...deck].reverse();
+        const cardsHTML = reverseActiveDeck
+            .map((card) => `<div class="card"><h3>${card}</h3></div>`)
+            .join("");
+        showModal(`<div id="show-pile-modal">
+                        <div id="modal-header">
+                            <h2>Active Deck</h2>
+                        </div>
+                        <div id="card-viewer-container">
+                            ${cardsHTML}
+                        </div>
+                        <div id="modal-btn-row">
+                            <button id="close-modal-btn">Close</button>
+                        </div>
+                    </div>`);
+    }
+});
 
 /*  MODAL FUNCTIONALITY
     -------------------
@@ -249,7 +337,7 @@ function hideModal() {
 
 // Add an event listener for any buttons on the modal
 modal.addEventListener("click", function (event) {
-    if (event.target.id === "close-rules-btn") {
+    if (event.target.id === "close-modal-btn") {
         hideModal();
     } else if (event.target.id === "game-over-btn") {
         hideModal();
@@ -270,7 +358,7 @@ rulesBtn.addEventListener("click", function () {
                         <ul>
                             <li>
                                 Two cards are drawn from your deck. One is
-                                flipped. You must guess whther the card you
+                                flipped. You must guess if the card you
                                 cannot see is higher or lower than the one you
                                 can see.
                             </li>
@@ -281,7 +369,7 @@ rulesBtn.addEventListener("click", function () {
                             </li>
                             <li>
                                 When there are no more cards left in the deck to
-                                draw, the game is over. You have won 🎉
+                                draw, you have won 🎉
                             </li>
                             <li>
                                 As you play, you may be presented with modifiers
@@ -299,7 +387,7 @@ rulesBtn.addEventListener("click", function () {
                         <p>Good luck!</p>
                     </div>
                     <div id="modal-btn-row">
-                        <button id="close-rules-btn">Close rules</button>
+                        <button id="close-modal-btn">Close rules</button>
                     </div>
                 </div>`);
 });
