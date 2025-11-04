@@ -186,9 +186,7 @@ function convertCard(card) {
 }
 function compareCards(card1, card2, playerGuess) {
     let card1Value = convertCard(card1);
-    console.log(card1Value);
     let card2Value = convertCard(card2);
-    console.log(card2Value);
     if (
         (card1Value < card2Value && playerGuess === "higher-btn") ||
         (card1Value > card2Value && playerGuess === "lower-btn") ||
@@ -196,7 +194,9 @@ function compareCards(card1, card2, playerGuess) {
     ) {
         handleWin();
     } else {
-        console.log("You lose. Game Over.");
+        setTimeout(function () {
+            gameOverLose(streak);
+        }, 1000);
     }
 }
 
@@ -234,7 +234,9 @@ function handleWin() {
     }, 1000);
 }
 
-// Modal Functionality
+/*  MODAL FUNCTIONALITY
+    -------------------
+*/
 function showModal(contentHTML) {
     modalContent.innerHTML = contentHTML;
     modal.classList.remove("hidden");
@@ -244,7 +246,20 @@ function hideModal() {
     modalContent.innerHTML = "";
     modal.classList.add("hidden");
 }
-// Show Rules
+
+// Add an event listener for any buttons on the modal
+modal.addEventListener("click", function (event) {
+    if (event.target.id === "close-rules-btn") {
+        hideModal();
+    } else if (event.target.id === "game-over-btn") {
+        hideModal();
+        startNewGame();
+    }
+});
+
+/*  SHOW RULES MODAL
+    ----------------
+*/
 rulesBtn.addEventListener("click", function () {
     showModal(`<div id="show-rules-modal">
                     <div id="rules-header">
@@ -283,23 +298,34 @@ rulesBtn.addEventListener("click", function () {
                         </ul>
                         <p>Good luck!</p>
                     </div>
-                    <div id="rules-close-btn">
-                        <button id="close-rules">Close rules</button>
+                    <div id="modal-btn-row">
+                        <button id="close-rules-btn">Close rules</button>
                     </div>
                 </div>`);
 });
-// Add an event listener to the overlay to be able to use the button to close
-modal.addEventListener("click", function (event) {
-    if (event.target.id === "close-rules") {
-        hideModal();
-    }
-});
+
+/*  GAME OVER MODAL
+    ---------------
+*/
+function gameOverLose(score) {
+    showModal(`<div id="game-over-modal">
+                    <div id="modal-header">
+                        <h2>Game Over!</h2>
+                    </div>
+                    <div id="modal-text">
+                        <p id="game-over-modal-text">You got a streak of <span id="game-over-streak">${score}</span> this run! Try to beat it on the next one.</p>
+                    </div>
+                    <div id="modal-btn-row">
+                        <button id="game-over-btn">New Game</button>
+                    </div>
+                </div>`);
+}
 
 // Run the start new game function on page load
 startNewGame();
 
-/*  START EMOJI ROTATION
-    --------------------
+/*  EMOJI ROTATION FOOTER
+    ---------------------
     This feature is unrelated to the game logic. It cycles the emoji used in the footer of the
     page on page load and click
 */

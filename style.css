@@ -356,17 +356,35 @@ footer p span#footer-emoji {
     box-shadow: 0px 5px rgb(48, 48, 48);
 }
 
-#modal-content h2 {
+#modal-content h2,
+span#game-over-streak {
     font-family: "Jersey 10", sans-serif;
     font-size: 3rem;
     text-shadow: 0px 5px rgb(48, 48, 48);
     margin-bottom: 0;
     text-align: center;
 }
-#rules-header,
-#rules-close-btn {
+
+#game-over-modal-text {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+}
+
+span#game-over-streak {
+    padding-left: 5px;
+    color: #d29603;
+}
+
+#modal-header,
+#modal-btn-row {
     display: flex;
     justify-content: center;
+}
+
+#game-over-modal-text {
+    text-align: center;
 }
 
 .hidden {
