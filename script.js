@@ -237,9 +237,9 @@ function handleWin() {
             knownCardDrawn = true;
             unknownCardDrawn = false;
             currentUnknown = null;
-            // Temporary placeholder for testing
-            canViewDiscardPile = true;
-            canViewActivePile = true;
+            // // Temporary placeholder for testing
+            // canViewDiscardPile = true;
+            // canViewActivePile = true;
             // Check whether the active/discard piles should be accessible or not
             canAccessDiscardPile();
             canAccessActivePile();
@@ -408,6 +408,58 @@ function gameOverLose(score) {
                     </div>
                 </div>`);
 }
+
+/*  START → MODIFIER SYSTEM
+--------------------------------------------------------------------------------
+*/
+/* Define a modifier libary taht includes an id, title, description, type, 
+image, and effect.
+*/
+const MODIFIER_LIBRARY = [
+    {
+        id: "increase_value_1",
+        title: "+1 Value Boost",
+        description:
+            "Increase the value of the current active card by 1 immediately.",
+        type: "instant",
+        effect: "applyIncreaseValueBy1",
+        image: "plus-one",
+        weight: 10, // common
+    },
+    {
+        id: "increase_value_2",
+        title: "+2 Value Boost",
+        description:
+            "Increase the value of the current active card by 2 immediately.",
+        type: "instant",
+        effect: "applyIncreaseValueBy2",
+        image: "plus-two",
+        weight: 5, // uncommon
+    },
+    {
+        id: "decrease_value_1",
+        title: "-1 Value Reduction",
+        description:
+            "Decrease the value of the current active card by 1 immediately.",
+        type: "instant",
+        effect: "applyDecreaseValueBy1",
+        image: "minus-one",
+        weight: 10, // common
+    },
+    {
+        id: "decrease_value_2",
+        title: "-2 Value Reduction",
+        description:
+            "Decrease the value of the current active card by 1 immediately.",
+        type: "instant",
+        effect: "applyDecreaseValueBy2",
+        image: "minus-two",
+        weight: 5, // uncommon
+    },
+];
+/*  END → MODIFIER SYSTEM
+--------------------------------------------------------------------------------
+*/
 
 // Run the start new game function on page load
 startNewGame();
