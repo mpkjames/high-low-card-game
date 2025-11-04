@@ -237,6 +237,7 @@ function handleWin() {
             knownCardDrawn = true;
             unknownCardDrawn = false;
             currentUnknown = null;
+            showModifierSelection();
             // // Temporary placeholder for testing
             // canViewDiscardPile = true;
             // canViewActivePile = true;
@@ -342,6 +343,12 @@ modal.addEventListener("click", function (event) {
     } else if (event.target.id === "game-over-btn") {
         hideModal();
         startNewGame();
+    } else {
+        const modifierBtn = event.target.closest(".modifier-choice");
+        if (modifierBtn) {
+            const modifierId = modifierBtn.dataset.modifierId;
+            applyModifier(modifierId);
+        }
     }
 });
 
@@ -420,43 +427,96 @@ const MODIFIER_LIBRARY = [
         id: "increase_value_1",
         title: "+1 Value Boost",
         description:
-            "Increase the value of the current active card by 1 immediately.",
+            "Increase the value of the current active card by 1 immediately if value is not an ace or face card.",
         type: "instant",
         effect: "applyIncreaseValueBy1",
-        image: "plus-one",
+        image: "elixir",
         weight: 10, // common
     },
     {
         id: "increase_value_2",
         title: "+2 Value Boost",
         description:
-            "Increase the value of the current active card by 2 immediately.",
+            "Increase the value of the current active card by 2 immediately if value is not an ace or face card.",
         type: "instant",
         effect: "applyIncreaseValueBy2",
-        image: "plus-two",
-        weight: 5, // uncommon
+        image: "elixir",
+        weight: 10, // common
     },
     {
         id: "decrease_value_1",
         title: "-1 Value Reduction",
         description:
-            "Decrease the value of the current active card by 1 immediately.",
+            "Decrease the value of the current active card by 1 immediately if value is not an ace or face card.",
         type: "instant",
         effect: "applyDecreaseValueBy1",
-        image: "minus-one",
+        image: "axe",
         weight: 10, // common
     },
     {
         id: "decrease_value_2",
         title: "-2 Value Reduction",
         description:
-            "Decrease the value of the current active card by 1 immediately.",
+            "Decrease the value of the current active card by 2 immediately if value is not an ace or face card.",
         type: "instant",
         effect: "applyDecreaseValueBy2",
-        image: "minus-two",
-        weight: 5, // uncommon
+        image: "axe",
+        weight: 10, // common
     },
 ];
+function showModifierSelection() {
+    const choice1 = getRandomModifier();
+    let choice2 = getRandomModifier();
+    let choice3 = getRandomModifier();
+    while (choice2.id === choice1.id) {
+        choice2 = getRandomModifier();
+    }
+    while (choice3.id === choice1.id || choice3.id === choice2.id) {
+        choice3 = getRandomModifier();
+    }
+    const choices = [choice1, choice2, choice3];
+    const modifiersHTML = choices
+        .map(
+            (choice) => `
+                <button class="modifier-choice" data-modifier-id=${choice.id}">
+                    <img src="images/${choice.image}.png" alt="${choice.title}">
+                    <h3>${choice.title}</h3>
+                    <p>${choice.description}</p>
+                </button>
+                `
+        )
+        .join("");
+    showModal(`
+        <div id="modifier-selection-modal">
+            <div id="modal-header">
+                <h2>Choose a Modifier!</h2>
+            </div>
+            <div id="modifier-choices-container">
+            ${modifiersHTML}
+            </div>
+            <div id="modal-btn-row">
+                <button id="close-modal-btn">No thanks...</button>
+            </div>
+        </div>
+        `);
+}
+function getRandomModifier() {
+    let totalWeight = 0;
+    for (const modifier of MODIFIER_LIBRARY) {
+        totalWeight += modifier.weight;
+    }
+    let randomNum = Math.random() * totalWeight;
+    for (const modifier of MODIFIER_LIBRARY) {
+        randomNum -= modifier.weight;
+        if (randomNum <= 0) {
+            return modifier;
+        }
+    }
+}
+function applyModifier(id) {
+    console.log(id);
+    hideModal();
+}
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
 */
