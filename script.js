@@ -441,7 +441,27 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyIncreaseValueBy2",
         image: "elixir",
-        weight: 5, // common
+        weight: 5, // uncommon
+    },
+    {
+        id: "increase_value_3",
+        title: "+3 Value Boost",
+        description:
+            "Increase the value of the current active card by 3 immediately if value is not an ace or face card.",
+        type: "instant",
+        effect: "applyIncreaseValueBy3",
+        image: "elixir",
+        weight: 2, // common
+    },
+    {
+        id: "increase_value_5",
+        title: "+5 Value Boost",
+        description:
+            "Increase the value of the current active card by 5 immediately if value is not an ace or face card.",
+        type: "instant",
+        effect: "applyIncreaseValueBy5",
+        image: "elixir",
+        weight: 1, // uncommon
     },
     {
         id: "decrease_value_1",
@@ -451,7 +471,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy1",
         image: "axe",
-        weight: 2, // common
+        weight: 10, // common
     },
     {
         id: "decrease_value_2",
@@ -461,7 +481,27 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy2",
         image: "axe",
-        weight: 1, // common
+        weight: 5, // uncommon
+    },
+    {
+        id: "decrease_value_3",
+        title: "-3 Value Reduction",
+        description:
+            "Decrease the value of the current active card by 3 immediately if value is not an ace or face card.",
+        type: "instant",
+        effect: "applyDecreaseValueBy3",
+        image: "axe",
+        weight: 2, // common
+    },
+    {
+        id: "decrease_value_5",
+        title: "-5 Value Reduction",
+        description:
+            "Decrease the value of the current active card by 5 immediately if value is not an ace or face card.",
+        type: "instant",
+        effect: "applyDecreaseValueBy5",
+        image: "axe",
+        weight: 1, // uncommon
     },
 ];
 function showModifierSelection() {
@@ -516,7 +556,38 @@ function getRandomModifier() {
     }
 }
 function applyModifier(id) {
-    console.log(id);
+    const modifier = MODIFIER_LIBRARY.find((m) => m.id === id);
+    if (!modifier) {
+        return;
+    }
+    switch (modifier.effect) {
+        case "applyIncreaseValueBy1":
+            applyValueModifier(1);
+            break;
+        case "applyIncreaseValueBy2":
+            applyValueModifier(2);
+            break;
+        case "applyIncreaseValueBy3":
+            applyValueModifier(3);
+            break;
+        case "applyIncreaseValueBy5":
+            applyValueModifier(5);
+            break;
+        case "applyDecreaseValueBy1":
+            applyValueModifier(-1);
+            break;
+        case "applyDecreaseValueBy2":
+            applyValueModifier(-2);
+            break;
+        case "applyDecreaseValueBy3":
+            applyValueModifier(-3);
+            break;
+        case "applyDecreaseValueBy5":
+            applyValueModifier(-5);
+            break;
+        default:
+            console.log("Unknown modifier effect: ", modifier.effect);
+    }
     hideModal();
 }
 function getRarityTier(weight) {
@@ -529,6 +600,26 @@ function getRarityTier(weight) {
     } else {
         return { label: "Super Rare", className: "rarity-super-rare" };
     }
+}
+function convertValueToRank(value) {
+    if (value > 14) value = 14;
+    if (value < 2) value = 2;
+    if (value === 14) return "A";
+    if (value === 13) return "K";
+    if (value === 12) return "Q";
+    if (value === 11) return "J";
+    return value.toString();
+}
+function applyValueModifier(amount) {
+    let currentValue = convertCard(currentKnown);
+    let newValue = currentValue + amount;
+    let newRank = convertValueToRank(newValue);
+    currentKnown = newRank + "-" + currentKnown.split("-")[1];
+    knownCard.classList.add("flip-animate");
+    setTimeout(function () {
+        knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
+        knownCard.classList.remove("spin");
+    }, 250);
 }
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
