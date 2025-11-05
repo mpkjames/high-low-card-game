@@ -239,8 +239,8 @@ function handleWin() {
             currentUnknown = null;
             showModifierSelection();
             // // Temporary placeholder for testing
-            // canViewDiscardPile = true;
-            // canViewActivePile = true;
+            canViewDiscardPile = true;
+            canViewActivePile = true;
             // Check whether the active/discard piles should be accessible or not
             canAccessDiscardPile();
             canAccessActivePile();
@@ -503,6 +503,16 @@ const MODIFIER_LIBRARY = [
         image: "axe",
         weight: 1, // uncommon
     },
+    {
+        id: "swap_with_discard",
+        title: "Random Discard Swap",
+        description:
+            "Swap the currently active card with a randomly chosen card from your discard pile. No effect if empty.",
+        type: "instant",
+        effect: "applySwapWithDiscard",
+        image: "signpost",
+        weight: 5, // uncommon
+    },
 ];
 function showModifierSelection() {
     const choice1 = getRandomModifier();
@@ -585,6 +595,9 @@ function applyModifier(id) {
         case "applyDecreaseValueBy5":
             applyValueModifier(-5);
             break;
+        case "applySwapWithDiscard":
+            applySwapWithDiscard();
+            break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
@@ -615,6 +628,17 @@ function applyValueModifier(amount) {
     let newValue = currentValue + amount;
     let newRank = convertValueToRank(newValue);
     currentKnown = newRank + "-" + currentKnown.split("-")[1];
+    knownCard.classList.add("flip-animate");
+    setTimeout(function () {
+        knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
+        knownCard.classList.remove("spin");
+    }, 250);
+}
+function applySwapWithDiscard() {
+    let randomIndex = Math.floor(Math.random() * discardDeck.length);
+    let temp = discardDeck[randomIndex];
+    discardDeck[randomIndex] = currentKnown;
+    currentKnown = temp;
     knownCard.classList.add("flip-animate");
     setTimeout(function () {
         knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
