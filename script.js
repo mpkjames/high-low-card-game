@@ -441,7 +441,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyIncreaseValueBy2",
         image: "elixir",
-        weight: 10, // common
+        weight: 5, // common
     },
     {
         id: "decrease_value_1",
@@ -451,7 +451,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy1",
         image: "axe",
-        weight: 10, // common
+        weight: 2, // common
     },
     {
         id: "decrease_value_2",
@@ -461,7 +461,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy2",
         image: "axe",
-        weight: 10, // common
+        weight: 1, // common
     },
 ];
 function showModifierSelection() {
@@ -476,15 +476,17 @@ function showModifierSelection() {
     }
     const choices = [choice1, choice2, choice3];
     const modifiersHTML = choices
-        .map(
-            (choice) => `
-                <button class="modifier-choice" data-modifier-id=${choice.id}">
+        .map((choice) => {
+            const rarity = getRarityTier(choice.weight);
+            return `
+                <button class="modifier-choice ${rarity.className}" data-modifier-id="${choice.id}">
                     <img src="images/${choice.image}.png" alt="${choice.title}">
                     <h3>${choice.title}</h3>
+                    <p class="rarity-label">${rarity.label}</p>
                     <p>${choice.description}</p>
                 </button>
-                `
-        )
+                `;
+        })
         .join("");
     showModal(`
         <div id="modifier-selection-modal">
@@ -516,6 +518,17 @@ function getRandomModifier() {
 function applyModifier(id) {
     console.log(id);
     hideModal();
+}
+function getRarityTier(weight) {
+    if (weight >= 10) {
+        return { label: "Common", className: "rarity-common" };
+    } else if (weight >= 5) {
+        return { label: "Uncommon", className: "rarity-uncommon" };
+    } else if (weight >= 2) {
+        return { label: "Rare", className: "rarity-rare" };
+    } else {
+        return { label: "Super Rare", className: "rarity-super-rare" };
+    }
 }
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
