@@ -6,6 +6,7 @@ let currentUnknown;
 let streak;
 let canViewDiscardPile;
 let canViewActivePile;
+let activeTrumpSuit;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -31,6 +32,7 @@ function startNewGame() {
     discardDeck = [];
     canViewDiscardPile = false;
     canViewActivePile = false;
+    let activeTrumpSuit = null;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -192,20 +194,49 @@ function convertCard(card) {
 function compareCards(card1, card2, playerGuess) {
     let card1Value = convertCard(card1);
     let card2Value = convertCard(card2);
-    if (
-        (card1Value < card2Value && playerGuess === "higher-btn") ||
-        (card1Value > card2Value && playerGuess === "lower-btn") ||
-        card1Value === card2Value
-    ) {
-        handleWin();
-        // Check if discard pile is viewable
-
-        // Check in active pile is viewable
-    } else {
-        setTimeout(function () {
-            gameOverLose(streak);
-        }, 1000);
+    let trumpSuitDecidedRoundOutcome = false;
+    // Handle trump suit modifiers
+    if (activeTrumpSuit != null) {
+        card1Suit = card1.split("-")[1];
+        card2Suit = card2.split("-")[1];
+        if (
+            (card1Suit === activeTrumpSuit &&
+                card2Suit != activeTrumpSuit &&
+                playerGuess === "lower-btn") ||
+            (card2Suit === activeTrumpSuit &&
+                card1Suit != activeTrumpSuit &&
+                playerGuess === "higher-btn")
+        ) {
+            handleWin();
+            trumpSuitDecidedRoundOutcome = true;
+        } else if (
+            (card1Suit === activeTrumpSuit &&
+                card2Suit != activeTrumpSuit &&
+                playerGuess === "higher-btn") ||
+            (card2Suit === activeTrumpSuit &&
+                card1Suit != activeTrumpSuit &&
+                playerGuess === "lower-btn")
+        ) {
+            setTimeout(function () {
+                gameOverLose(streak);
+            }, 1000);
+            trumpSuitDecidedRoundOutcome = true;
+        }
     }
+    if (!trumpSuitDecidedRoundOutcome) {
+        if (
+            (card1Value < card2Value && playerGuess === "higher-btn") ||
+            (card1Value > card2Value && playerGuess === "lower-btn") ||
+            card1Value === card2Value
+        ) {
+            handleWin();
+        } else {
+            setTimeout(function () {
+                gameOverLose(streak);
+            }, 1000);
+        }
+    }
+    activeTrumpSuit = null;
 }
 
 function handleWin() {
@@ -511,16 +542,56 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applySwapWithDiscard",
         image: "signpost",
-        weight: 5, // uncommon
+        weight: 2, // uncommon
     },
     {
         id: "swap_with_active",
-        title: "Active Pile Swap",
+        title: "Re-roll",
         description:
             "Swap the currently active card with a randomly chosen card from your active pile. No effect if empty.",
         type: "instant",
         effect: "applySwapWithActive",
-        image: "signpost",
+        image: "dices",
+        weight: 5, // rare
+    },
+    {
+        id: "set_trump_hearts",
+        title: "Trump Suit: ♥️",
+        description:
+            "Any heart card for the next round is higher than any non-heart card, regardless of rank.",
+        type: "instant",
+        effect: "applyTrumpHearts",
+        image: "level-up",
+        weight: 2, // rare
+    },
+    {
+        id: "set_trump_diamonds",
+        title: "Trump Suit: ♦️",
+        description:
+            "Any diamond card for the next round is higher than any non-diamond card, regardless of rank.",
+        type: "instant",
+        effect: "applyTrumpDiamonds",
+        image: "level-up",
+        weight: 2, // rare
+    },
+    {
+        id: "set_trump_clubs",
+        title: "Trump Suit: ♣️",
+        description:
+            "Any club card for the next round is higher than any non-club card, regardless of rank.",
+        type: "instant",
+        effect: "applyTrumpClubs",
+        image: "level-up",
+        weight: 2, // rare
+    },
+    {
+        id: "set_trump_spades",
+        title: "Trump Suit: ♠️",
+        description:
+            "Any spade card for the next round is higher than any non-spade card, regardless of rank.",
+        type: "instant",
+        effect: "applyTrumpSpades",
+        image: "level-up",
         weight: 2, // rare
     },
 ];
@@ -610,6 +681,18 @@ function applyModifier(id) {
             break;
         case "applySwapWithActive":
             applySwapWithActive();
+            break;
+        case "applyTrumpHearts":
+            activeTrumpSuit = "♥️";
+            break;
+        case "applyTrumpDiamonds":
+            activeTrumpSuit = "♦️";
+            break;
+        case "applyTrumpClubs":
+            activeTrumpSuit = "♣️";
+            break;
+        case "applyTrumpSpades":
+            activeTrumpSuit = "♠️";
             break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
