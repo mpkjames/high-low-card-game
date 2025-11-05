@@ -182,7 +182,7 @@ main div.game-board div.card h3 {
 }
 
 div.card.card-back {
-    background-image: url(/images/card-back.png);
+    background-image: url(images/card-back.png);
     background-size: cover;
     background-repeat: no-repeat;
     background-position: center;
