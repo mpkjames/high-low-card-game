@@ -451,7 +451,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyIncreaseValueBy3",
         image: "elixir",
-        weight: 2, // common
+        weight: 2, // rare
     },
     {
         id: "increase_value_5",
@@ -461,7 +461,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyIncreaseValueBy5",
         image: "elixir",
-        weight: 1, // uncommon
+        weight: 1, // super rare
     },
     {
         id: "decrease_value_1",
@@ -491,7 +491,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy3",
         image: "axe",
-        weight: 2, // common
+        weight: 2, // rare
     },
     {
         id: "decrease_value_5",
@@ -501,17 +501,27 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applyDecreaseValueBy5",
         image: "axe",
-        weight: 1, // uncommon
+        weight: 1, // super rare
     },
     {
         id: "swap_with_discard",
-        title: "Random Discard Swap",
+        title: "Discard Pile Swap",
         description:
             "Swap the currently active card with a randomly chosen card from your discard pile. No effect if empty.",
         type: "instant",
         effect: "applySwapWithDiscard",
         image: "signpost",
         weight: 5, // uncommon
+    },
+    {
+        id: "swap_with_active",
+        title: "Active Pile Swap",
+        description:
+            "Swap the currently active card with a randomly chosen card from your active pile. No effect if empty.",
+        type: "instant",
+        effect: "applySwapWithActive",
+        image: "signpost",
+        weight: 2, // rare
     },
 ];
 function showModifierSelection() {
@@ -598,6 +608,9 @@ function applyModifier(id) {
         case "applySwapWithDiscard":
             applySwapWithDiscard();
             break;
+        case "applySwapWithActive":
+            applySwapWithActive();
+            break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
@@ -638,6 +651,17 @@ function applySwapWithDiscard() {
     let randomIndex = Math.floor(Math.random() * discardDeck.length);
     let temp = discardDeck[randomIndex];
     discardDeck[randomIndex] = currentKnown;
+    currentKnown = temp;
+    knownCard.classList.add("flip-animate");
+    setTimeout(function () {
+        knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
+        knownCard.classList.remove("spin");
+    }, 250);
+}
+function applySwapWithActive() {
+    let randomIndex = Math.floor(Math.random() * deck.length);
+    let temp = deck[randomIndex];
+    deck[randomIndex] = currentKnown;
     currentKnown = temp;
     knownCard.classList.add("flip-animate");
     setTimeout(function () {
