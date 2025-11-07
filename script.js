@@ -752,6 +752,17 @@ function applySwapWithActive() {
         knownCard.classList.remove("spin");
     }, 250);
 }
+
+// temp
+const showModifiers = document.getElementById("show-modifiers");
+const modifierDrawer = document.getElementById("modifier-drawer");
+const modifierCloseBtn = document.getElementById("close-modifier-btn");
+showModifiers.addEventListener("click", function () {
+    modifierDrawer.classList.add("is-visible");
+});
+modifierCloseBtn.addEventListener("click", function () {
+    modifierDrawer.classList.remove("is-visible");
+});
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
 */
