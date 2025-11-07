@@ -21,6 +21,7 @@
             <div id="game-buttons">
                 <button id="new-game-btn">New Game</button>
                 <button id="rules-btn">How to Play</button>
+                <button id="show-modifiers">👀</button>
             </div>
         </header>
         <main>
@@ -67,9 +68,21 @@
         <footer>
             <p>Made with <span id="footer-emoji"></span> by MJ</p>
         </footer>
+        <!-- MODAL: For Win/loss messages, rule, etc. -->
         <div id="modal-overlay" class="hidden">
             <div id="modal-content" class="pixel-corners"></div>
         </div>
+        <!-- MODIFIER DRAWER: to display modifier selection -->
+        <div id="modifier-drawer">
+            <div id="modifier-container">
+                <div id="modifier-header">
+                    <h2>Choose Modifier!</h2>
+                    <button id="close-modifier-btn">No thanks...</button>
+                </div>
+                <div id="modifier-choices-container">...</div>
+            </div>
+        </div>
+
         <script src="script.js"></script>
     </body>
 </html>
