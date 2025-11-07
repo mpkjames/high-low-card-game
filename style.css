@@ -444,11 +444,13 @@ span#game-over-streak {
     padding: 2rem;
     display: flex;
     flex-direction: row;
-    flex-wrap: wrap;
+    flex-wrap: no-wrap;
     justify-content: space-between;
     align-items: center;
     height: auto;
     max-width: 600px;
+    margin: auto;
+    gap: 2rem;
 }
 #modifier-header {
     max-width: 125px;
@@ -496,7 +498,8 @@ span#game-over-streak {
 }
 
 .modifier-choice {
-    padding: 1rem;
+    padding: 0.5rem;
+    width: 8rem;
 }
 
 .modifier-choice img {
@@ -506,7 +509,7 @@ span#game-over-streak {
 
 .modifier-choice h3 {
     font-family: "Jersey 10", sans-serif;
-    font-size: 2rem;
+    font-size: 1.5rem;
     text-shadow: 0px 5px rgb(48, 48, 48);
     margin-bottom: 0;
     text-align: center;
@@ -514,7 +517,7 @@ span#game-over-streak {
 }
 .modifier-choice p {
     font-weight: 400;
-    font-size: 0.75rem;
+    font-size: 0.6rem;
 }
 
 #modifier-choices-container {
@@ -530,10 +533,11 @@ span#game-over-streak {
     border-radius: 50px;
     text-transform: uppercase;
     font-style: italic;
-    padding: 0.5rem 0.25rem;
+    padding: 0.25rem;
     box-shadow: 0px 5px rgb(48, 48, 48);
-    margin-left: 1rem;
-    margin-right: 1rem;
+    margin-left: 0.75rem;
+    margin-right: 0.75rem;
+    font-size: 0.5rem;
 }
 .modifier-choice.rarity-common {
     background-color: rgb(69, 69, 69);

@@ -20,6 +20,11 @@ const activePile = document.getElementById("active-cards");
 const modal = document.getElementById("modal-overlay");
 const rulesBtn = document.getElementById("rules-btn");
 const modalContent = document.getElementById("modal-content");
+const modifierDrawer = document.getElementById("modifier-drawer");
+const modifierCloseBtn = document.getElementById("close-modifier-btn");
+const modifierChoicesContainer = document.getElementById(
+    "modifier-choices-container"
+);
 
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
@@ -50,6 +55,7 @@ function startNewGame() {
     activePile.classList.add("inactive-pile");
     knownCard.classList.remove("slide-and-fade-out");
     unknownCard.classList.remove("slide-and-replace");
+    modifierDrawer.classList.remove("is-visible");
 }
 
 newGameBtn.addEventListener("click", function () {
@@ -559,7 +565,7 @@ const MODIFIER_LIBRARY = [
         title: "Trump Suit: ♥️",
         description:
             "Any heart card for the next round is higher than any non-heart card, regardless of rank.",
-        type: "instant",
+        type: "round",
         effect: "applyTrumpHearts",
         image: "level-up",
         weight: 2, // rare
@@ -569,7 +575,7 @@ const MODIFIER_LIBRARY = [
         title: "Trump Suit: ♦️",
         description:
             "Any diamond card for the next round is higher than any non-diamond card, regardless of rank.",
-        type: "instant",
+        type: "round",
         effect: "applyTrumpDiamonds",
         image: "level-up",
         weight: 2, // rare
@@ -579,7 +585,7 @@ const MODIFIER_LIBRARY = [
         title: "Trump Suit: ♣️",
         description:
             "Any club card for the next round is higher than any non-club card, regardless of rank.",
-        type: "instant",
+        type: "round",
         effect: "applyTrumpClubs",
         image: "level-up",
         weight: 2, // rare
@@ -589,7 +595,7 @@ const MODIFIER_LIBRARY = [
         title: "Trump Suit: ♠️",
         description:
             "Any spade card for the next round is higher than any non-spade card, regardless of rank.",
-        type: "instant",
+        type: "round",
         effect: "applyTrumpSpades",
         image: "level-up",
         weight: 2, // rare
@@ -614,24 +620,14 @@ function showModifierSelection() {
                     <img src="images/${choice.image}.png" alt="${choice.title}">
                     <h3>${choice.title}</h3>
                     <p class="rarity-label">${rarity.label}</p>
-                    <p>${choice.description}</p>
                 </button>
                 `;
         })
         .join("");
-    showModal(`
-        <div id="modifier-selection-modal">
-            <div id="modal-header">
-                <h2>Choose a Modifier!</h2>
-            </div>
-            <div id="modifier-choices-container">
+    modifierChoicesContainer.innerHTML = `
             ${modifiersHTML}
-            </div>
-            <div id="modal-btn-row">
-                <button id="close-modal-btn">No thanks...</button>
-            </div>
-        </div>
-        `);
+        `;
+    modifierDrawer.classList.add("is-visible");
 }
 function getRandomModifier() {
     let totalWeight = 0;
@@ -755,8 +751,6 @@ function applySwapWithActive() {
 
 // temp
 const showModifiers = document.getElementById("show-modifiers");
-const modifierDrawer = document.getElementById("modifier-drawer");
-const modifierCloseBtn = document.getElementById("close-modifier-btn");
 showModifiers.addEventListener("click", function () {
     modifierDrawer.classList.add("is-visible");
 });
