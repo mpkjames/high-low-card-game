@@ -10,6 +10,7 @@ let activeTrumpSuit;
 let isGamePaused;
 let activeRoundModifiers;
 let isFaceCardOrderAlphabetical;
+let modifierChoicesCount;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -46,6 +47,7 @@ function startNewGame() {
     isGamePaused = false;
     activeRoundModifiers = [];
     isFaceCardOrderAlphabetical = false;
+    modifierChoicesCount = 2;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -671,16 +673,16 @@ const MODIFIER_LIBRARY = [
     },
 ];
 function showModifierSelection() {
-    const choice1 = getRandomModifier();
-    let choice2 = getRandomModifier();
-    let choice3 = getRandomModifier();
-    while (choice2.id === choice1.id) {
-        choice2 = getRandomModifier();
+    let choices = [];
+    while (choices.length < modifierChoicesCount) {
+        const newChoice = getRandomModifier();
+        const isAlreadyChosen = choices.some(
+            (choice) => choice.id === newChoice.id
+        );
+        if (!isAlreadyChosen) {
+            choices.push(newChoice);
+        }
     }
-    while (choice3.id === choice1.id || choice3.id === choice2.id) {
-        choice3 = getRandomModifier();
-    }
-    const choices = [choice1, choice2, choice3];
     const modifiersHTML = choices
         .map((choice) => {
             const rarity = getRarityTier(choice.weight);
