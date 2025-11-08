@@ -7,6 +7,7 @@ let streak;
 let canViewDiscardPile;
 let canViewActivePile;
 let activeTrumpSuit;
+let isGamePaused;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -37,7 +38,8 @@ function startNewGame() {
     discardDeck = [];
     canViewDiscardPile = false;
     canViewActivePile = false;
-    let activeTrumpSuit = null;
+    activeTrumpSuit = null;
+    isGamePaused = false;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -45,7 +47,7 @@ function startNewGame() {
     knownCard.classList.remove("flip-animate");
     unknownCard.innerHTML = "";
     unknownCard.classList.add("card-back");
-    unknownCard.classList.remove("flip-animate", "flippable");
+    unknownCard.classList.remove("flip-animate", "flippable", "inactive-pile");
     higherBtn.classList.add("not-selectable");
     higherBtn.classList.remove("selected");
     lowerBtn.classList.add("not-selectable");
@@ -56,6 +58,31 @@ function startNewGame() {
     knownCard.classList.remove("slide-and-fade-out");
     unknownCard.classList.remove("slide-and-replace");
     modifierDrawer.classList.remove("is-visible");
+}
+function pauseGame() {
+    knownCard.classList.remove("flippable");
+    unknownCard.classList.remove("flippable");
+    unknownCard.classList.add("inactive-pile");
+    higherBtn.classList.add("not-selectable");
+    lowerBtn.classList.add("not-selectable");
+    isGamePaused = true;
+}
+function resumeGame() {
+    if (knownCardDrawn) {
+        higherBtn.classList.remove("not-selectable");
+        lowerBtn.classList.remove("not-selectable");
+    }
+    if (!knownCardDrawn) {
+        knownCard.classList.add("flippable");
+    } else if (
+        knownCardDrawn &&
+        !unknownCardDrawn &&
+        document.querySelector(".selected")
+    ) {
+        unknownCard.classList.add("flippable");
+    }
+    unknownCard.classList.remove("inactive-pile");
+    isGamePaused = false;
 }
 
 newGameBtn.addEventListener("click", function () {
@@ -116,6 +143,9 @@ function shuffle(array) {
 
 // Display the next card when the "Draw" button is clicked
 knownCard.addEventListener("click", function () {
+    if (isGamePaused) {
+        return;
+    }
     if (!knownCardDrawn) {
         currentKnown = getnextCard(deck);
         knownCard.classList.add("flip-animate");
@@ -136,6 +166,9 @@ function getnextCard(deck) {
 
 // Make a selection of higher or lower
 higherBtn.addEventListener("click", function () {
+    if (isGamePaused) {
+        return;
+    }
     if (knownCardDrawn && !unknownCardDrawn) {
         higherBtn.classList.add("selected");
         lowerBtn.classList.remove("selected");
@@ -143,6 +176,9 @@ higherBtn.addEventListener("click", function () {
     }
 });
 lowerBtn.addEventListener("click", function () {
+    if (isGamePaused) {
+        return;
+    }
     if (knownCardDrawn && !unknownCardDrawn) {
         lowerBtn.classList.add("selected");
         higherBtn.classList.remove("selected");
@@ -152,6 +188,9 @@ lowerBtn.addEventListener("click", function () {
 
 // Reveal the unknown card
 unknownCard.addEventListener("click", function () {
+    if (isGamePaused) {
+        return;
+    }
     // Check to see if a higher/lower option has been selected
     const higherLowerSelected = document.querySelector(".selected");
     if (higherLowerSelected == null) {
@@ -275,6 +314,7 @@ function handleWin() {
             unknownCardDrawn = false;
             currentUnknown = null;
             showModifierSelection();
+            pauseGame();
             // // Temporary placeholder for testing
             canViewDiscardPile = true;
             canViewActivePile = true;
@@ -380,12 +420,6 @@ modal.addEventListener("click", function (event) {
     } else if (event.target.id === "game-over-btn") {
         hideModal();
         startNewGame();
-    } else {
-        const modifierBtn = event.target.closest(".modifier-choice");
-        if (modifierBtn) {
-            const modifierId = modifierBtn.dataset.modifierId;
-            applyModifier(modifierId);
-        }
     }
 });
 
@@ -693,7 +727,7 @@ function applyModifier(id) {
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
-    hideModal();
+    hideModifierDrawer();
 }
 function getRarityTier(weight) {
     if (weight >= 10) {
@@ -748,15 +782,25 @@ function applySwapWithActive() {
         knownCard.classList.remove("spin");
     }, 250);
 }
-
-// temp
-const showModifiers = document.getElementById("show-modifiers");
-showModifiers.addEventListener("click", function () {
-    modifierDrawer.classList.add("is-visible");
+modifierChoicesContainer.addEventListener("click", function () {
+    const modifierBtn = event.target.closest(".modifier-choice");
+    if (modifierBtn) {
+        const modifierId = modifierBtn.dataset.modifierId;
+        applyModifier(modifierId);
+    }
 });
-modifierCloseBtn.addEventListener("click", function () {
+function hideModifierDrawer() {
     modifierDrawer.classList.remove("is-visible");
+    setTimeout(function () {
+        modifierChoicesContainer.innerHTML = "";
+        resumeGame();
+    }, 500);
+}
+
+modifierCloseBtn.addEventListener("click", function () {
+    hideModifierDrawer();
 });
+
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
 */
