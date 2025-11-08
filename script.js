@@ -8,6 +8,7 @@ let canViewDiscardPile;
 let canViewActivePile;
 let activeTrumpSuit;
 let isGamePaused;
+let activeRoundModifiers;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -27,6 +28,7 @@ const modifierChoicesContainer = document.getElementById(
     "modifier-choices-container"
 );
 const modifierToolTip = document.getElementById("modifier-tooltip");
+const roundModifiers = document.getElementById("round-modifiers");
 
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
@@ -41,6 +43,7 @@ function startNewGame() {
     canViewActivePile = false;
     activeTrumpSuit = null;
     isGamePaused = false;
+    activeRoundModifiers = [];
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -59,6 +62,7 @@ function startNewGame() {
     knownCard.classList.remove("slide-and-fade-out");
     unknownCard.classList.remove("slide-and-replace");
     modifierDrawer.classList.remove("is-visible");
+    modifierToolTip.classList.remove("is-above");
 }
 function pauseGame() {
     knownCard.classList.remove("flippable");
@@ -283,6 +287,8 @@ function compareCards(card1, card2, playerGuess) {
         }
     }
     activeTrumpSuit = null;
+    activeRoundModifiers = [];
+    updateActiveModifierUI();
 }
 
 function handleWin() {
@@ -311,6 +317,7 @@ function handleWin() {
             lowerBtn.classList.remove("not-selectable");
             lowerBtn.classList.remove("selected");
             unknownCard.classList.remove("slide-and-replace");
+            modifierToolTip.classList.remove("is-above");
             knownCardDrawn = true;
             unknownCardDrawn = false;
             currentUnknown = null;
@@ -728,6 +735,10 @@ function applyModifier(id) {
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
+    if (modifier.type === "round") {
+        activeRoundModifiers.push(modifier);
+        updateActiveModifierUI();
+    }
     hideModifierDrawer();
 }
 function getRarityTier(weight) {
@@ -814,11 +825,38 @@ function hideModifierDrawer() {
         resumeGame();
     }, 500);
 }
-
 modifierCloseBtn.addEventListener("click", function () {
     hideModifierDrawer();
 });
-
+function updateActiveModifierUI() {
+    const roundModifiersHTML = activeRoundModifiers
+        .map((modifier) => {
+            const rarity = getRarityTier(modifier.weight);
+            return `
+                <div class="active-modifier-pin modifier-choice ${rarity.className}"  data-modifier-title="${modifier.title}" data-modifier-description="${modifier.description}">
+                    <img src="images/${modifier.image}.png" alt="${modifier.title}">
+                </div>
+                `;
+        })
+        .join("");
+    roundModifiers.innerHTML = roundModifiersHTML;
+}
+roundModifiers.addEventListener("mouseover", function (event) {
+    const modifierBtn = event.target.closest(".active-modifier-pin");
+    if (modifierBtn) {
+        const rect = modifierBtn.getBoundingClientRect();
+        const description = modifierBtn.dataset.modifierDescription;
+        modifierToolTip.innerHTML = description;
+        modifierToolTip.style.left = rect.left + rect.width / 2 + "px";
+        modifierToolTip.style.top = rect.top - 10 + "px";
+        modifierToolTip.classList.add("is-above");
+        modifierToolTip.style.display = "block";
+    }
+});
+roundModifiers.addEventListener("mouseout", function () {
+    modifierToolTip.classList.remove("is-above");
+    modifierToolTip.style.display = "none";
+});
 /*  END → MODIFIER SYSTEM
 --------------------------------------------------------------------------------
 */
