@@ -576,6 +576,19 @@ span#game-over-streak {
     color: #d29603;
 }
 
+#modifier-tooltip {
+    position: fixed;
+    display: none;
+    padding: 1rem;
+    background-color: rgb(46, 23, 92);
+    z-index: 999;
+    width: 200px;
+    pointer-events: none;
+    line-height: 1rem;
+    font-size: 1rem;
+    transform: translateX(-50%);
+}
+
 /* START PIXEL CORNERS */
 /* ------------------- */
 
