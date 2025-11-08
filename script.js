@@ -9,6 +9,7 @@ let canViewActivePile;
 let activeTrumpSuit;
 let isGamePaused;
 let activeRoundModifiers;
+let isFaceCardOrderAlphabetical;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -44,6 +45,7 @@ function startNewGame() {
     activeTrumpSuit = null;
     isGamePaused = false;
     activeRoundModifiers = [];
+    isFaceCardOrderAlphabetical = false;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -226,6 +228,20 @@ unknownCard.addEventListener("click", function () {
 
 // convert the cards and compare
 function convertCard(card) {
+    if (isFaceCardOrderAlphabetical) {
+        if (card.split("-")[0] === "A") {
+            return 11;
+        }
+        if (card.split("-")[0] === "K") {
+            return 13;
+        }
+        if (card.split("-")[0] === "Q") {
+            return 14;
+        }
+        if (card.split("-")[0] === "J") {
+            return 12;
+        }
+    }
     if (card.split("-")[0] === "A") {
         return 14;
     }
@@ -287,6 +303,7 @@ function compareCards(card1, card2, playerGuess) {
         }
     }
     activeTrumpSuit = null;
+    isFaceCardOrderAlphabetical = false;
     activeRoundModifiers = [];
     updateActiveModifierUI();
 }
@@ -590,7 +607,7 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applySwapWithDiscard",
         image: "signpost",
-        weight: 2, // uncommon
+        weight: 2, // rare
     },
     {
         id: "swap_with_active",
@@ -600,47 +617,57 @@ const MODIFIER_LIBRARY = [
         type: "instant",
         effect: "applySwapWithActive",
         image: "dices",
-        weight: 5, // rare
+        weight: 5, // uncommon
     },
     {
         id: "set_trump_hearts",
-        title: "Trump Suit: ♥️",
+        title: "Power Hearts",
         description:
-            "Any heart card for the next round is higher than any non-heart card, regardless of rank.",
+            "For the next round, any heart card for the next round is higher than any non-heart card, regardless of rank.",
         type: "round",
         effect: "applyTrumpHearts",
-        image: "level-up",
+        image: "heart",
         weight: 2, // rare
     },
     {
         id: "set_trump_diamonds",
-        title: "Trump Suit: ♦️",
+        title: "Power Diamonds",
         description:
-            "Any diamond card for the next round is higher than any non-diamond card, regardless of rank.",
+            "For the next round, any diamond card for the next round is higher than any non-diamond card, regardless of rank.",
         type: "round",
         effect: "applyTrumpDiamonds",
-        image: "level-up",
+        image: "diamond",
         weight: 2, // rare
     },
     {
         id: "set_trump_clubs",
-        title: "Trump Suit: ♣️",
+        title: "Power Clubs",
         description:
-            "Any club card for the next round is higher than any non-club card, regardless of rank.",
+            "For the next round, any club card for the next round is higher than any non-club card, regardless of rank.",
         type: "round",
         effect: "applyTrumpClubs",
-        image: "level-up",
+        image: "clover",
         weight: 2, // rare
     },
     {
         id: "set_trump_spades",
-        title: "Trump Suit: ♠️",
+        title: "Power Spades",
         description:
-            "Any spade card for the next round is higher than any non-spade card, regardless of rank.",
+            "For the next round, any spade card for the next round is higher than any non-spade card, regardless of rank.",
         type: "round",
         effect: "applyTrumpSpades",
-        image: "level-up",
+        image: "spade",
         weight: 2, // rare
+    },
+    {
+        id: "alphabetical_face_cards",
+        title: "Alphabetical Order",
+        description:
+            "For the next round, face cards are evaluated in alphabetical order, A < J < K < Q.",
+        type: "round",
+        effect: "applyAlphabeticalFaceCards",
+        image: "abc-block",
+        weight: 10, // common
     },
 ];
 function showModifierSelection() {
@@ -732,6 +759,8 @@ function applyModifier(id) {
         case "applyTrumpSpades":
             activeTrumpSuit = "♠️";
             break;
+        case "alphabetical_face_cards":
+            isFaceCardOrderAlphabetical = true;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
