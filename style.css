@@ -328,7 +328,7 @@ button.selected {
     opacity: 0.5;
 }
 
-#deck-area div.card-pile.inactive-pile {
+.inactive-pile {
     filter: grayscale();
 }
 
@@ -503,8 +503,8 @@ span#game-over-streak {
 }
 
 .modifier-choice img {
-    width: 64px;
-    height: 64px;
+    width: 48px;
+    height: 48px;
 }
 
 .modifier-choice h3 {
