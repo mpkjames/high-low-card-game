@@ -41,8 +41,8 @@ function startNewGame() {
     currentUnknown = null;
     streak = 0;
     discardDeck = [];
-    canViewDiscardPile = false;
-    canViewActivePile = false;
+    canViewDiscardPile = true;
+    canViewActivePile = true;
     activeTrumpSuit = null;
     isGamePaused = false;
     activeRoundModifiers = [];
@@ -158,9 +158,10 @@ knownCard.addEventListener("click", function () {
     if (!knownCardDrawn) {
         currentKnown = getnextCard(deck);
         knownCard.classList.add("flip-animate");
+        knownCard.classList.remove("flippable");
         setTimeout(function () {
             knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
-            knownCard.classList.remove("card-back", "flippable");
+            knownCard.classList.remove("card-back");
         }, 250);
         higherBtn.classList.remove("not-selectable");
         lowerBtn.classList.remove("not-selectable");
@@ -218,9 +219,10 @@ unknownCard.addEventListener("click", function () {
         // Flip the card
         currentUnknown = getnextCard(deck);
         unknownCard.classList.add("flip-animate");
+        unknownCard.classList.remove("flippable");
         setTimeout(function () {
             unknownCard.innerHTML = "<h3>" + currentUnknown + "</h3>";
-            unknownCard.classList.remove("card-back", "flippable");
+            unknownCard.classList.remove("card-back");
         }, 250);
         // Compare the values
         compareCards(currentKnown, currentUnknown, playerGuess);
@@ -342,9 +344,6 @@ function handleWin() {
             currentUnknown = null;
             showModifierSelection();
             pauseGame();
-            // // Temporary placeholder for testing
-            canViewDiscardPile = true;
-            canViewActivePile = true;
             // Check whether the active/discard piles should be accessible or not
             canAccessDiscardPile();
             canAccessActivePile();
@@ -388,7 +387,11 @@ discardPile.addEventListener("click", function () {
         // For display pusposes, create a reversed COPY of the discard pile
         const reverseDiscardDeck = [...discardDeck].reverse();
         const cardsHTML = reverseDiscardDeck
-            .map((card) => `<div class="card"><h3>${card}</h3></div>`)
+            .map((card, index) => {
+                const specialId =
+                    index === 0 ? 'id="last-discarded-in-pile"' : "";
+                return `<div class="card" ${specialId}><h3>${card}</h3></div>`;
+            })
             .join("");
         showModal(`<div id="show-pile-modal">
                         <div id="modal-header">
@@ -411,7 +414,12 @@ activePile.addEventListener("click", function () {
         // For display pusposes, create a reversed COPY of the discard pile
         const reverseActiveDeck = [...deck].reverse();
         const cardsHTML = reverseActiveDeck
-            .map((card) => `<div class="card"><h3>${card}</h3></div>`)
+            .map((card, index) => {
+                const showFaceUp = shouldShowCard(card);
+                const revealClass = showFaceUp ? "should-reveal" : "";
+                const specialId = index === 0 ? 'id="next-active-in-pile"' : "";
+                return `<div class="card card-back ${revealClass}" ${specialId} data-index="${index}"><h3></h3></div>`;
+            })
             .join("");
         showModal(`<div id="show-pile-modal">
                         <div id="modal-header">
@@ -424,8 +432,40 @@ activePile.addEventListener("click", function () {
                             <button id="close-modal-btn">Close</button>
                         </div>
                     </div>`);
+        const cardsToFlip = document.querySelectorAll(".should-reveal");
+        cardsToFlip.forEach((cardElement) => {
+            const deckIndex = cardElement.dataset.index;
+            const cardValue = reverseActiveDeck[deckIndex];
+            cardElement.classList.add("flip-animate");
+            setTimeout(function () {
+                cardElement.innerHTML = `<h3>${cardValue}</h3>`;
+                cardElement.classList.remove("card-back");
+            }, 250);
+        });
     }
 });
+function shouldShowCard(card) {
+    for (const modifier of activeRoundModifiers) {
+        if (
+            modifier.effect === "applyRevealQueens" &&
+            card.split("-")[0] === "Q"
+        ) {
+            return true;
+        }
+        if (
+            modifier.effect === "applyRevealKings" &&
+            card.split("-")[0] === "K"
+        ) {
+            return true;
+        }
+        if (
+            modifier.effect === "applyRevealJacks" &&
+            card.split("-")[0] === "J"
+        ) {
+            return true;
+        }
+    }
+}
 
 /*  MODAL FUNCTIONALITY
     -------------------
@@ -671,6 +711,36 @@ const MODIFIER_LIBRARY = [
         image: "abc-block",
         weight: 10, // common
     },
+    {
+        id: "reveal_queens",
+        title: "Queens on Display",
+        description:
+            "For the next round, reveal the position of any Queens in your unseen card pile.",
+        type: "round",
+        effect: "applyRevealQueens",
+        image: "queen",
+        weight: 5, // uncommon
+    },
+    {
+        id: "reveal_kings",
+        title: "Visible Kings",
+        description:
+            "For the next round, reveal the position of any Kings in your unseen card pile.",
+        type: "round",
+        effect: "applyRevealKings",
+        image: "king",
+        weight: 2, // rare
+    },
+    {
+        id: "reveal_jacks",
+        title: "Jacks About Town",
+        description:
+            "For the next round, reveal the position of any Jacks in your unseen card pile.",
+        type: "round",
+        effect: "applyRevealJacks",
+        image: "jack",
+        weight: 10, // common
+    },
 ];
 function showModifierSelection() {
     let choices = [];
@@ -761,8 +831,15 @@ function applyModifier(id) {
         case "applyTrumpSpades":
             activeTrumpSuit = "♠️";
             break;
-        case "alphabetical_face_cards":
+        case "applyAlphabeticalFaceCards":
             isFaceCardOrderAlphabetical = true;
+            break;
+        case "applyRevealQueens":
+            break;
+        case "applyRevealKings":
+            break;
+        case "applyRevealJacks":
+            break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
