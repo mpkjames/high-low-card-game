@@ -26,6 +26,7 @@ const modifierCloseBtn = document.getElementById("close-modifier-btn");
 const modifierChoicesContainer = document.getElementById(
     "modifier-choices-container"
 );
+const modifierToolTip = document.getElementById("modifier-tooltip");
 
 // A function to start a new game (called automatically on page load)
 function startNewGame() {
@@ -650,7 +651,7 @@ function showModifierSelection() {
         .map((choice) => {
             const rarity = getRarityTier(choice.weight);
             return `
-                <button class="modifier-choice ${rarity.className}" data-modifier-id="${choice.id}">
+                <button class="modifier-choice ${rarity.className}" data-modifier-id="${choice.id}" data-modifier-description="${choice.description}">
                     <img src="images/${choice.image}.png" alt="${choice.title}">
                     <h3>${choice.title}</h3>
                     <p class="rarity-label">${rarity.label}</p>
@@ -789,8 +790,25 @@ modifierChoicesContainer.addEventListener("click", function () {
         applyModifier(modifierId);
     }
 });
+modifierChoicesContainer.addEventListener("mouseover", function (event) {
+    const modifierBtn = event.target.closest(".modifier-choice");
+    console.log("hello tooltip");
+    if (modifierBtn) {
+        const rect = modifierBtn.getBoundingClientRect();
+        const description = modifierBtn.dataset.modifierDescription;
+        console.log(description);
+        modifierToolTip.innerHTML = description;
+        modifierToolTip.style.left = rect.left + rect.width / 2 + "px";
+        modifierToolTip.style.top = rect.bottom + 5 + "px";
+        modifierToolTip.style.display = "block";
+    }
+});
+modifierChoicesContainer.addEventListener("mouseout", function () {
+    modifierToolTip.style.display = "none";
+});
 function hideModifierDrawer() {
     modifierDrawer.classList.remove("is-visible");
+    modifierToolTip.style.display = "none";
     setTimeout(function () {
         modifierChoicesContainer.innerHTML = "";
         resumeGame();
