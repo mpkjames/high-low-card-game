@@ -140,6 +140,11 @@ main div.game-board {
     justify-content: center;
     gap: 2rem;
 }
+@media (width <= 530px) {
+    main div.game-board {
+        width: 400px;
+    }
+}
 
 main div.game-board div.card-row {
     display: flex;
@@ -638,6 +643,23 @@ span#game-over-streak {
 
 #modifier-tooltip.is-above {
     transform: translateX(-50%) translateY(-100%);
+}
+
+.fade-to-active-pile {
+    animation-name: move-fade-down-right;
+    animation-duration: 1s;
+    animation-timing-function: ease-in-out;
+    animation-fill-mode: forwards;
+}
+@keyframes move-fade-down-right {
+    0% {
+        transform: translate(0, 0);
+        opacity: 1;
+    }
+    100% {
+        transform: translate(100px, 100px);
+        opacity: 0;
+    }
 }
 
 /* START PIXEL CORNERS */

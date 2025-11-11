@@ -774,6 +774,16 @@ const MODIFIER_LIBRARY = [
         image: "bear-market",
         weight: 10, // common
     },
+    {
+        id: "glimpse",
+        title: "Glimpse",
+        description:
+            "Reveal the next card before having it shuffled back into your active pile",
+        type: "instant",
+        effect: "applyGlimpse",
+        image: "watch",
+        weight: 10, // common
+    },
 ];
 function showModifierSelection() {
     let choices = [];
@@ -879,6 +889,9 @@ function applyModifier(id) {
         case "applyAcesLow":
             isAcesLowActive = true;
             break;
+        case "applyGlimpse":
+            applyGlimpseCard();
+            break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
@@ -939,6 +952,32 @@ function applySwapWithActive() {
     setTimeout(function () {
         knownCard.innerHTML = "<h3>" + currentKnown + "</h3>";
         knownCard.classList.remove("spin");
+    }, 250);
+}
+function applyGlimpseCard() {
+    currentUnknown = getnextCard(deck);
+    unknownCard.classList.add("flip-animate");
+    unknownCard.classList.remove("flippable");
+    pauseGame();
+    setTimeout(function () {
+        unknownCard.innerHTML = "<h3>" + currentUnknown + "</h3>";
+        unknownCard.classList.remove("card-back");
+        setTimeout(function () {
+            unknownCard.classList.add("fade-to-active-pile");
+            setTimeout(function () {
+                const randomIndex = Math.floor(Math.random() * deck.length + 1);
+                deck.splice(randomIndex, 0, currentUnknown);
+                unknownCard.classList.remove(
+                    "fade-to-active-pile",
+                    "flip-animate"
+                );
+                unknownCard.classList.add("card-back");
+                unknownCard.innerHTML = "";
+                unknownCardDrawn = false;
+                currentUnknown = null;
+                resumeGame();
+            }, 1250);
+        }, 500);
     }, 250);
 }
 modifierChoicesContainer.addEventListener("click", function () {
