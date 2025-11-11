@@ -12,6 +12,7 @@ let activeRoundModifiers;
 let isFaceCardOrderAlphabetical;
 let modifierChoicesCount;
 let isHighStakesActive;
+let isAcesLowActive;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -49,7 +50,8 @@ function startNewGame() {
     activeRoundModifiers = [];
     isFaceCardOrderAlphabetical = false;
     modifierChoicesCount = 2;
-    let isHighStakesActive = false;
+    isHighStakesActive = false;
+    isAcesLowActive = false;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -232,6 +234,11 @@ unknownCard.addEventListener("click", function () {
 
 // convert the cards and compare
 function convertCard(card) {
+    if (isAcesLowActive) {
+        if (card.split("-")[0] === "A") {
+            return 1;
+        }
+    }
     if (isFaceCardOrderAlphabetical) {
         if (card.split("-")[0] === "A") {
             return 11;
@@ -309,6 +316,7 @@ function compareCards(card1, card2, playerGuess) {
     activeTrumpSuit = null;
     isFaceCardOrderAlphabetical = false;
     isHighStakesActive = false;
+    isAcesLowActive = false;
     activeRoundModifiers = [];
     updateActiveModifierUI();
 }
@@ -754,6 +762,16 @@ const MODIFIER_LIBRARY = [
         type: "round",
         effect: "applyHighStakes",
         image: "steak",
+        weight: 2, // rare
+    },
+    {
+        id: "aces_low",
+        title: "Aces Low",
+        description:
+            "For this round, aces are the lowest value card (A < 2, not K < A).",
+        type: "round",
+        effect: "applyAcesLow",
+        image: "bear-market",
         weight: 10, // common
     },
 ];
@@ -857,6 +875,9 @@ function applyModifier(id) {
             break;
         case "applyHighStakes":
             isHighStakesActive = true;
+            break;
+        case "applyAcesLow":
+            isAcesLowActive = true;
             break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
