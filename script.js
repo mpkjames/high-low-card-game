@@ -11,6 +11,7 @@ let isGamePaused;
 let activeRoundModifiers;
 let isFaceCardOrderAlphabetical;
 let modifierChoicesCount;
+let isHighStakesActive;
 
 // Get various elements from game board
 const knownCard = document.getElementById("known-card");
@@ -48,6 +49,7 @@ function startNewGame() {
     activeRoundModifiers = [];
     isFaceCardOrderAlphabetical = false;
     modifierChoicesCount = 2;
+    let isHighStakesActive = false;
     createDeck();
     shuffle(deck);
     knownCard.innerHTML = "";
@@ -61,8 +63,6 @@ function startNewGame() {
     lowerBtn.classList.add("not-selectable");
     lowerBtn.classList.remove("selected");
     streakCounter.innerHTML = streak + "!";
-    discardPile.classList.add("empty", "inactive-pile");
-    activePile.classList.add("inactive-pile");
     knownCard.classList.remove("slide-and-fade-out");
     unknownCard.classList.remove("slide-and-replace");
     modifierDrawer.classList.remove("is-visible");
@@ -308,12 +308,17 @@ function compareCards(card1, card2, playerGuess) {
     }
     activeTrumpSuit = null;
     isFaceCardOrderAlphabetical = false;
+    isHighStakesActive = false;
     activeRoundModifiers = [];
     updateActiveModifierUI();
 }
 
 function handleWin() {
-    streak++;
+    if (isHighStakesActive) {
+        streak += 2;
+    } else {
+        streak += 1;
+    }
     streakCounterContainer.classList.add("update-bounce-animate");
     setTimeout(function () {
         streakCounter.innerHTML = streak + "!";
@@ -741,6 +746,16 @@ const MODIFIER_LIBRARY = [
         image: "jack",
         weight: 10, // common
     },
+    {
+        id: "high_stakes",
+        title: "High Stakes",
+        description:
+            "If you guess correctly on the next card, your streak will increase by 2 instead of 1.",
+        type: "round",
+        effect: "applyHighStakes",
+        image: "steak",
+        weight: 10, // common
+    },
 ];
 function showModifierSelection() {
     let choices = [];
@@ -840,6 +855,9 @@ function applyModifier(id) {
             break;
         case "applyRevealJacks":
             break;
+        case "applyHighStakes":
+            isHighStakesActive = true;
+            break;
         default:
             console.log("Unknown modifier effect: ", modifier.effect);
     }
@@ -911,11 +929,9 @@ modifierChoicesContainer.addEventListener("click", function () {
 });
 modifierChoicesContainer.addEventListener("mouseover", function (event) {
     const modifierBtn = event.target.closest(".modifier-choice");
-    console.log("hello tooltip");
     if (modifierBtn) {
         const rect = modifierBtn.getBoundingClientRect();
         const description = modifierBtn.dataset.modifierDescription;
-        console.log(description);
         modifierToolTip.innerHTML = description;
         modifierToolTip.style.left = rect.left + rect.width / 2 + "px";
         modifierToolTip.style.top = rect.bottom + 5 + "px";
